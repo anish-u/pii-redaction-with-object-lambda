@@ -1,4 +1,4 @@
-import { Stack, StackProps, RemovalPolicy } from "aws-cdk-lib";
+import { Stack, StackProps, RemovalPolicy, Tags } from "aws-cdk-lib";
 import { PolicyStatement, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 import { Function, Runtime, Code } from "aws-cdk-lib/aws-lambda";
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
@@ -14,8 +14,15 @@ export class PiiMaskerStack extends Stack {
     "object-lambda-access-point";
   private readonly PII_MASKER_LAMBDA_NAME = "maskerLambdaFunction";
 
+  // Constants for tagging
+  private readonly PROJECT_TAG_KEY = "project";
+  private readonly PROJECT_TAG_VALUE = "pii-masker";
+
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
+
+    // Add Tag to entire stack (propagates to all taggable resources)
+    Tags.of(this).add(this.PROJECT_TAG_KEY, this.PROJECT_TAG_VALUE);
 
     // 1. Create an S3 bucket to hold raw data (text files with PII)
     const rawDataBucket = this.createS3RawDataBucket();
