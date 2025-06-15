@@ -6,14 +6,14 @@ This project demonstrates how to use **Amazon S3 Object Lambda** and **AWS Lambd
 
 ```bash
 s3-object-lambda-pii-redaction/
-├── cdk/                  # CDK app & stack definition
-│   ├── bin/
-│   │   └── app.ts
-│   ├── lib/
-│   │   └── pii-masker-stack.ts
-│   └── cdk.json
+├── bin                   # CDK app definition
+│   └──  app.ts
+├── lib                   # CDK stack definition
+│   └──  pii-masker-stack.ts
+├── cdk.json
 ├── lambda/               # Python Lambda function for redacting PII
 │   └── index.py
+├── input                 # Folder storing raw data for testing
 ├── README.md
 ├── .gitignore
 └── package.json
