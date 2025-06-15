@@ -104,5 +104,8 @@ This removes:
 - IAM policies
 
 ```
-Since we are using CDK and logRetention, the log events inside CloudWatch log groups will expire automatically after the retention period (7 days). However, the log groups themselves are not deleted by default. To clean them up completely, you can use AWS CLI / AWS Console to delete all log groups with specific project tag.
+Since we are using CDK and logRetention, the log events inside CloudWatch log groups will expire
+automatically after the retention period (7 days). However, the log groups themselves are not
+deleted by default. To clean them up completely, you can use AWS CLI / AWS Console to delete all
+log groups with specific project tag.
 ```
