@@ -1,14 +1,12 @@
-# Welcome to your CDK TypeScript project
+# PII Redaction on Amazon S3 using Object Lambda and AWS CDK
 
-This is a blank project for CDK development with TypeScript.
-
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+Mask sensitive data on-the-fly during S3 object retrieval using Object Lambda and a Python-based Lambda function.
 
 ## Useful commands
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `npx cdk deploy`  deploy this stack to your default AWS account/region
-* `npx cdk diff`    compare deployed stack with current state
-* `npx cdk synth`   emits the synthesized CloudFormation template
+- `npm run build` compile typescript to js
+- `npm run watch` watch for changes and compile
+- `npm run test` perform the jest unit tests
+- `npx cdk deploy` deploy this stack to your default AWS account/region
+- `npx cdk diff` compare deployed stack with current state
+- `npx cdk synth` emits the synthesized CloudFormation template
