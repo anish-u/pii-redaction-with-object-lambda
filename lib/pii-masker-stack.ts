@@ -64,11 +64,15 @@ export class PiiMaskerStack extends Stack {
    * autoDeleteObjects and removalPolicy allow cleanup during stack destroy.
    */
   private createS3RawDataBucket(): Bucket {
-    return new Bucket(this, "RawDataBucket", {
+    const bucket = new Bucket(this, "RawDataBucket", {
       bucketName: this.RAW_DATA_BUCKET_NAME,
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
     });
+
+    Tags.of(bucket).add(this.PROJECT_TAG_KEY, this.PROJECT_TAG_VALUE);
+
+    return bucket;
   }
 
   /**
@@ -79,10 +83,12 @@ export class PiiMaskerStack extends Stack {
     accessPointName: string,
     bucket: Bucket
   ): string {
-    new CfnS3AccessPoint(this, "S3AccessPoint", {
+    const accessPoint = new CfnS3AccessPoint(this, "S3AccessPoint", {
       bucket: bucket.bucketName,
       name: accessPointName,
     });
+
+    Tags.of(accessPoint).add(this.PROJECT_TAG_KEY, this.PROJECT_TAG_VALUE);
 
     return `arn:aws:s3:${this.region}:${this.account}:accesspoint/${accessPointName}`;
   }
@@ -91,7 +97,7 @@ export class PiiMaskerStack extends Stack {
    * Defines the Lambda function that will be invoked by Object Lambda to mask/redact data.
    */
   private createLambdaFunctionForPiiMasking(bucket: Bucket): Function {
-    return new Function(this, "PiiMaskerLambda", {
+    const lambdaFn = new Function(this, "PiiMaskerLambda", {
       runtime: Runtime.PYTHON_3_9,
       functionName: this.PII_MASKER_LAMBDA_NAME,
       code: Code.fromAsset("lambda"),
@@ -101,6 +107,10 @@ export class PiiMaskerStack extends Stack {
       },
       logRetention: RetentionDays.ONE_WEEK,
     });
+
+    Tags.of(lambdaFn).add(this.PROJECT_TAG_KEY, this.PROJECT_TAG_VALUE);
+
+    return lambdaFn;
   }
 
   /**
@@ -132,22 +142,31 @@ export class PiiMaskerStack extends Stack {
     lambdaFn: Function,
     supportingAccessPointArn: string
   ): string {
-    new CfnS3ObjectLambdaAccessPoint(this, "S3ObjectLambdaAccessPoint", {
-      name: accessPointName,
-      objectLambdaConfiguration: {
-        supportingAccessPoint: supportingAccessPointArn,
-        transformationConfigurations: [
-          {
-            actions: ["GetObject"],
-            contentTransformation: {
-              AwsLambda: {
-                FunctionArn: lambdaFn.functionArn,
+    const objectLambdaAccessPoint = new CfnS3ObjectLambdaAccessPoint(
+      this,
+      "S3ObjectLambdaAccessPoint",
+      {
+        name: accessPointName,
+        objectLambdaConfiguration: {
+          supportingAccessPoint: supportingAccessPointArn,
+          transformationConfigurations: [
+            {
+              actions: ["GetObject"],
+              contentTransformation: {
+                AwsLambda: {
+                  FunctionArn: lambdaFn.functionArn,
+                },
               },
             },
-          },
-        ],
-      },
-    });
+          ],
+        },
+      }
+    );
+
+    Tags.of(objectLambdaAccessPoint).add(
+      this.PROJECT_TAG_KEY,
+      this.PROJECT_TAG_VALUE
+    );
 
     return `arn:aws:s3-object-lambda:${this.region}:${this.account}:accesspoint/${accessPointName}`;
   }
