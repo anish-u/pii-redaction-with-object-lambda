@@ -2,6 +2,8 @@
 
 This project demonstrates how to use **Amazon S3 Object Lambda** and **AWS Lambda** to dynamically redact sensitive information (PII) such as email addresses during S3 object retrieval — without modifying the original files.
 
+Read my blog regarding the project here: [medium link](https://medium.com/@ummenthala.anish/redacting-sensitive-data-on-the-fly-with-s3-object-lambda-76107d6210a7)
+
 ## Project Structure
 
 ```bash
@@ -75,12 +77,12 @@ Project Manager
 
 ```bash
 # Raw object
-aws s3 cp s3://raw-bucket-with-sensitive-data/logs.csv ./input/test.txt
+aws s3 cp s3://raw-bucket-with-sensitive-data/test.txt ./input/test.txt
 
 # Redacted via Object Lambda
 aws s3api get-object \
   --bucket arn:aws:s3-object-lambda:<_REGION_>:<_ACCOUNT_ID_>:accesspoint/object-lambda-access-point \
-  --key logs.csv \
+  --key test.txt \
   ./output/test.txt
 
 ```
